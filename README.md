@@ -1,7 +1,7 @@
 # Marketplace price tracking app
 
 ### Description
-This is a Telegram app for tracking price changes on online marketplaces such as Ozon, Yandex Market, Wildberries, Megamarket, and Lamoda.
+This is a Telegram app for tracking price changes on online marketplaces such as [Ozon](https://www.ozon.ru/), [Yandex Market](https://market.yandex.ru), [Wildberries](https://www.wildberries.ru) and [Lamoda](https://www.lamoda.ru).
 
 ### Quick Start
 1. Clone repo
@@ -31,7 +31,7 @@ python3 main.py
 ```
 
 ### Technology
-[Python](https://www.python.org), [Selenium](https://selenium-python.readthedocs.io/), [SQLAlchemy](https://www.sqlalchemy.org), [PostgreSQL](https://www.postgresql.org/), [Python Telegram Bot](https://python-telegram-bot.org), [Docker](https://www.docker.com/), [GitHub Actions](https://github.com/features/actions)
+[Python](https://www.python.org), [Selenium](https://selenium-python.readthedocs.io), [SQLAlchemy](https://www.sqlalchemy.org), [PostgreSQL](https://www.postgresql.org), [Python Telegram Bot](https://python-telegram-bot.org), [Docker](https://www.docker.com), [GitHub Actions](https://github.com/features/actions)
 
 ### Author
 [Evgeniy Golodnykh](https://github.com/Evgeniy-Golodnykh)
