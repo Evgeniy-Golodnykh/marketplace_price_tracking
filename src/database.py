@@ -1,16 +1,15 @@
 import datetime as dt
+from contextlib import asynccontextmanager
 
-from sqlalchemy import (
-    Column, Date, Integer, String, UniqueConstraint, create_engine,
-)
+from sqlalchemy import Column, Date, Integer, String, UniqueConstraint, select
 from sqlalchemy.engine.url import URL
-from sqlalchemy.orm import Session, declarative_base
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 from configs import DATABASE
 
 Base = declarative_base()
-
-current_date = dt.date.today()
 
 
 class Item(Base):
@@ -26,40 +25,68 @@ class Item(Base):
     name = Column(String(300))
     url = Column(String(300))
     target_price = Column(Integer)
-    create_date = Column(Date, default=current_date)
+    create_date = Column(Date, default=dt.date.today)
     expiry_date = Column(Date)
 
     def __repr__(self):
         return self.name
 
 
-def get_session():
-    """Open a session for database access"""
-
-    engine = create_engine(URL.create(**DATABASE))
-    Base.metadata.create_all(engine)
-    return Session(engine)
-
-
-def close_session(session):
-    """Close the database access session"""
-    session.close()
+engine = create_async_engine(URL.create(**DATABASE), echo=False)
+AsyncSessionLocal = sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
 
 
-def add_to_db(session, telegram_id, name, url, target_price, days):
-    """Add Item instance to database."""
+async def init_models():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
-    if session.query(Item).filter(
-        Item.url == url,
-        Item.telegram_id == telegram_id
-    ).count():
+
+@asynccontextmanager
+async def get_session():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+
+async def add_to_db(session, telegram_id, name, url, target_price, days):
+    """Add Item instance to database with uniqueness check."""
+
+    uniq_check = await session.execute(
+        select(Item).where(Item.url == url, Item.telegram_id == telegram_id)
+    )
+    if uniq_check.scalar():
         return False
-    session.add(Item(
+
+    item = Item(
         telegram_id=telegram_id,
         name=name,
         url=url,
         target_price=target_price,
-        expiry_date=current_date + dt.timedelta(days)
-    ))
-    session.commit()
-    return True
+        expiry_date=dt.date.today() + dt.timedelta(days=days)
+    )
+
+    session.add(item)
+    try:
+        await session.commit()
+        return True
+    except IntegrityError:
+        await session.rollback()
+        return False
+
+
+'''
+async def main():
+    await init_models()  # Только один раз при запуске
+
+    async with get_session() as session:
+        success = await add_to_db(
+            session, 12345, "Item Name", "https://example.com", 1000, 30
+        )
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+'''

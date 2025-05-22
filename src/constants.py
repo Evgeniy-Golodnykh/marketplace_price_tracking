@@ -14,4 +14,4 @@ POSTGRES_DB = os.getenv('POSTGRES_DB')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 DATETIME_FORMAT = '%d.%m.%Y %H:%M:%S'
-LOGFORMAT = '%(asctime)s [%(levelname)s] %(filename)s/%(funcName)s %(message)s'
+LOG_FORMAT = '%(asctime)s [%(levelname)s] in %(name)s: %(message)s'
