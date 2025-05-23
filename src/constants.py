@@ -15,3 +15,14 @@ TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 DATETIME_FORMAT = '%d.%m.%Y %H:%M:%S'
 LOG_FORMAT = '%(asctime)s [%(levelname)s] in %(name)s: %(message)s'
+
+MARKETPLACE_URLS = (
+    'https://ozon.ru',
+    'https://www.ozon.ru',
+    'https://market.yandex.ru',
+    'https://www.market.yandex.ru',
+    'https://wildberries.ru',
+    'https://www.wildberries.ru',
+    'https://lamoda.ru'
+    'https://www.lamoda.ru'
+)

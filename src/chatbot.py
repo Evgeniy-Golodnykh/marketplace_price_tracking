@@ -1,6 +1,6 @@
 import asyncio
 
-from aiogram import Bot, Dispatcher, F, Router, types
+from aiogram import Bot, Dispatcher, F, Router
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
@@ -8,12 +8,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import (
-    InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Message,
-    ReplyKeyboardMarkup,
+    BotCommand, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup,
+    KeyboardButton, MenuButtonCommands, Message, ReplyKeyboardMarkup,
 )
 
 from configs import configure_logging
-from constants import TELEGRAM_TOKEN
+from constants import MARKETPLACE_URLS, TELEGRAM_TOKEN
 
 
 class TrackItem(StatesGroup):
@@ -33,19 +33,6 @@ main_menu = ReplyKeyboardMarkup(
     resize_keyboard=True,
     keyboard=[[KeyboardButton(text='Добавить товар'),
                KeyboardButton(text='Избранное')]]
-)
-
-inline_menu = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [InlineKeyboardButton(
-            text='/start - Начать работу', callback_data='start')],
-        [InlineKeyboardButton(
-            text='/menu - Главное меню', callback_data='menu')],
-        [InlineKeyboardButton(
-            text='/favorite - Избранные товары', callback_data='favorite')],
-        [InlineKeyboardButton(
-            text='/stop - Завершить работу', callback_data='stop')]
-    ]
 )
 
 
@@ -79,29 +66,53 @@ async def add_item(message: Message, state: FSMContext):
 
 @router.message(TrackItem.waiting_for_link)
 async def get_link(message: Message, state: FSMContext):
-    await state.update_data(link=message.text)
+    link = message.text.strip()
+    if all([url not in link for url in MARKETPLACE_URLS]):
+        await message.answer('Пожалуйста, введите корректную ссылку')
+        return
+    await state.update_data(link=link)
     await message.answer('Введите желаемую цену:')
     await state.set_state(TrackItem.waiting_for_price)
 
 
 @router.message(TrackItem.waiting_for_price)
 async def get_price(message: Message, state: FSMContext):
-    await state.update_data(price=message.text)
-    await message.answer('Введите срок отслеживания (в днях):')
+    try:
+        price = int(message.text.strip())
+        if price < 1:
+            raise ValueError
+    except ValueError:
+        await message.answer('Пожалуйста, введите положительное целое число')
+        return
+    await state.update_data(price=price)
+
+    durations = ['10', '20', '30', '60']
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(
+                text=f'{d} дней', callback_data=f'duration_{d}')]
+            for d in durations
+        ]
+    )
+    await message.answer('Выберите срок отслеживания:', reply_markup=keyboard)
     await state.set_state(TrackItem.waiting_for_duration)
 
 
-@router.message(TrackItem.waiting_for_duration)
-async def get_duration(message: Message, state: FSMContext):
+@router.callback_query(F.data.startswith('duration_'))
+async def handle_duration_callback(callback: CallbackQuery, state: FSMContext):
+    duration = callback.data.split('_')[1]
     data = await state.get_data()
     link = data['link']
     price = data['price']
-    duration = message.text
-    await message.answer(
-        f'Товар добавлен:\nСсылка: {link}\nЦена: {price}\n'
-        f'Срок: {duration} дней'
+
+    await callback.message.edit_reply_markup()
+    await callback.message.answer(
+        f'''Товар добавлен:
+            Ссылка: {link}
+            Цена: {price}
+            Срок: {duration} дней'''
     )
-    await message.answer(
+    await callback.message.answer(
         'Выберите следующее действие:', reply_markup=main_menu
     )
     await state.clear()
@@ -114,12 +125,12 @@ async def show_favorites(message: Message):
 
 async def main():
     await bot.set_my_commands([
-        types.BotCommand(command='start', description='Начать работу'),
-        types.BotCommand(command='menu', description='Главное меню'),
-        types.BotCommand(command='favorite', description='Избранные товары'),
-        types.BotCommand(command='stop', description='Завершить работу')
+        BotCommand(command='start', description='Начать работу'),
+        BotCommand(command='menu', description='Главное меню'),
+        BotCommand(command='favorite', description='Избранные товары'),
+        BotCommand(command='stop', description='Завершить работу')
     ])
-    await bot.set_chat_menu_button(menu_button=types.MenuButtonCommands())
+    await bot.set_chat_menu_button(menu_button=MenuButtonCommands())
     dp.include_router(router)
     await dp.start_polling(bot)
 
