@@ -31,7 +31,7 @@ python3 main.py
 ```
 
 ### Technology
-[Python](https://www.python.org), [Selenium](https://selenium-python.readthedocs.io), [SQLAlchemy](https://www.sqlalchemy.org), [PostgreSQL](https://www.postgresql.org), [Python Telegram Bot](https://python-telegram-bot.org), [Docker](https://www.docker.com), [GitHub Actions](https://github.com/features/actions)
+[Python](https://www.python.org), [Playwright](https://playwright.dev/python/), [SQLAlchemy](https://www.sqlalchemy.org), [PostgreSQL](https://www.postgresql.org), [Aiogram](https://aiogram.dev), [Docker](https://www.docker.com), [GitHub Actions](https://github.com/features/actions)
 
 ### Author
 [Evgeniy Golodnykh](https://github.com/Evgeniy-Golodnykh)
