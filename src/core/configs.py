@@ -1,6 +1,6 @@
 import logging
 
-from constants import (
+from core.constants import (
     DATETIME_FORMAT, DB_DRIVER_NAME, DB_HOST, DB_PORT, LOG_FORMAT, POSTGRES_DB,
     POSTGRES_PASSWORD, POSTGRES_USER,
 )
@@ -25,4 +25,5 @@ def configure_logging():
     )
 
     logging.getLogger('asyncio').setLevel(logging.WARNING)
+    logging.getLogger('aiogram.event').setLevel(logging.WARNING)
     logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)

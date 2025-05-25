@@ -23,6 +23,7 @@ MARKETPLACE_URLS = (
     'https://www.market.yandex.ru',
     'https://wildberries.ru',
     'https://www.wildberries.ru',
-    'https://lamoda.ru'
-    'https://www.lamoda.ru'
+    'https://lamoda.ru',
+    'https://www.lamoda.ru',
 )
+TRACKING_DURATION = ('15 дней', '30 дней', '45 дней', '60 дней')
