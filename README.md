@@ -1,7 +1,7 @@
 # Marketplace price tracking app
 
 ### Description
-This is a Telegram Bot for tracking price changes on online marketplaces such as [Ozon](https://www.ozon.ru/), [Yandex Market](https://market.yandex.ru), [Wildberries](https://www.wildberries.ru) and [Lamoda](https://www.lamoda.ru).
+This is a Telegram Bot for tracking price changes on online marketplaces such as [Avito](https://www.avito.ru/), [Lamoda](https://www.lamoda.ru), [Ozon](https://www.ozon.ru/), [Wildberries](https://www.wildberries.ru) and [Yandex Market](https://market.yandex.ru).
 
 ### Quick Start
 1. Clone repo
