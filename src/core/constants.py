@@ -17,6 +17,8 @@ DATETIME_FORMAT = '%d.%m.%Y %H:%M:%S'
 LOG_FORMAT = '%(asctime)s [%(levelname)s] in %(name)s: %(message)s'
 
 MARKETPLACE_URLS = (
+    'https://avito.ru/',
+    'https://www.avito.ru/',
     'https://ozon.ru',
     'https://www.ozon.ru',
     'https://market.yandex.ru',

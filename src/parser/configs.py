@@ -1,11 +1,3 @@
-ozon_selectors = {
-    'price_selectors': [
-        'span.m1q_28.qm1_28.q5m_28',
-        'div.k7n_28.n7k_28 span'
-    ],
-    'title_selector': 'h1',
-}
-
 browser_config = {
     'user_agent': (
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -19,9 +11,7 @@ browser_config = {
         '--disable-extensions'
     ),
     'viewport': {'width': 1280, 'height': 800},
-    'locale': 'ru-RU',
-    'price_selectors': None,
-    'title_selector': None,
+    'locale': 'ru-RU'
 }
 
 stealth_js = '''

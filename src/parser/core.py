@@ -13,12 +13,22 @@ async def extract_price(page, selectors):
     return 'Цена отсуствует'
 
 
+async def extract_title(page, selectors):
+    for selector in selectors:
+        try:
+            title = await page.locator(selector).text_content()
+            return title.strip()
+        except Exception:
+            continue
+    return 'Наименование отсуствует'
+
+
 async def parse_product(page, url, config):
     await page.goto(url, timeout=10000)
-    title = await page.locator(config['title_selector']).text_content()
+    title = await extract_title(page, config['title_selectors'])
     price = await extract_price(page, config['price_selectors'])
 
-    print(f'Название товара: {title.strip()}')
+    print(f'Название товара: {title}')
     print(f'Цена: {price}')
 
 
