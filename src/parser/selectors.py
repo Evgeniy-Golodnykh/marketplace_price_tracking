@@ -1,14 +1,3 @@
-avito = {
-    'price_selectors': [
-        'span[itemprop="price"]',
-        'span.m1q_28.qm1_28.q5m_28',
-    ],
-    'title_selectors': [
-        'h1[itemprop="name"]',
-        'h2[class="firewall-title"]',
-    ]
-}
-
 ozon = {
     'price_selectors': [
         'span.mp7_28.m5p_28',
@@ -16,6 +5,17 @@ ozon = {
     ],
     'title_selectors': [
         'h1',
+    ]
+}
+
+wildberries = {
+    'price_selectors': [
+        'span[class="price-block__wallet-price red-price"]',
+        'span[class="price-block__wallet-price"]',
+        'ins[class="price-block__final-price"]',
+    ],
+    'title_selectors': [
+        'h1[class="product-page__title"]',
     ]
 }
 

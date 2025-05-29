@@ -22,8 +22,9 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     telegram_id = Column(Integer)
-    name = Column(String(300))
-    url = Column(String(300))
+    marketplace = Column(String(50))
+    name = Column(String(500))
+    url = Column(String(500))
     target_price = Column(Integer)
     create_date = Column(Date, default=dt.date.today)
     expiry_date = Column(Date)

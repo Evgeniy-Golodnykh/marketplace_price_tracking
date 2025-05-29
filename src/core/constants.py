@@ -17,15 +17,11 @@ DATETIME_FORMAT = '%d.%m.%Y %H:%M:%S'
 LOG_FORMAT = '%(asctime)s [%(levelname)s] in %(name)s: %(message)s'
 
 MARKETPLACE_URLS = (
-    'https://avito.ru/',
-    'https://www.avito.ru/',
     'https://ozon.ru',
     'https://www.ozon.ru',
     'https://market.yandex.ru',
     'https://www.market.yandex.ru',
     'https://wildberries.ru',
     'https://www.wildberries.ru',
-    'https://lamoda.ru',
-    'https://www.lamoda.ru',
 )
 TRACKING_DURATION = ('15 дней', '30 дней', '45 дней', '60 дней')
