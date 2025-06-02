@@ -1,7 +1,9 @@
 import datetime as dt
 from contextlib import asynccontextmanager
 
-from sqlalchemy import Column, Date, Integer, String, UniqueConstraint, select
+from sqlalchemy import (
+    Column, Date, Integer, String, UniqueConstraint, delete, select,
+)
 from sqlalchemy.engine.url import URL
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -23,7 +25,6 @@ class Item(Base):
     id = Column(Integer, primary_key=True)
     telegram_id = Column(Integer)
     marketplace = Column(String(50))
-    name = Column(String(500))
     url = Column(String(500))
     target_price = Column(Integer)
     create_date = Column(Date, default=dt.date.today)
@@ -52,7 +53,26 @@ async def get_session():
         yield session
 
 
-async def add_to_db(session, telegram_id, name, url, target_price, days):
+async def get_all_items(session, telegram_id=None):
+    """Get all or Telegram user Item instances."""
+
+    if telegram_id:
+        result = await session.execute(
+            select(Item).where(Item.telegram_id == telegram_id)
+        )
+    else:
+        result = await session.execute(select(Item))
+    return result.scalars().all()
+
+
+async def create_item(
+        session,
+        telegram_id,
+        url,
+        marketplace,
+        target_price,
+        days,
+):
     """Add Item instance to database with uniqueness check."""
 
     uniq_check = await session.execute(
@@ -63,8 +83,8 @@ async def add_to_db(session, telegram_id, name, url, target_price, days):
 
     item = Item(
         telegram_id=telegram_id,
-        name=name,
         url=url,
+        marketplace=marketplace,
         target_price=target_price,
         expiry_date=dt.date.today() + dt.timedelta(days=days)
     )
@@ -78,13 +98,22 @@ async def add_to_db(session, telegram_id, name, url, target_price, days):
         return False
 
 
+async def delete_item(session, telegram_id, url):
+    """Delete a Item instance."""
+
+    stmt = delete(Item).where(Item.telegram_id == telegram_id, Item.url == url)
+    result = await session.execute(stmt)
+    await session.commit()
+    return result.rowcount > 0
+
+
 '''
 async def main():
     await init_models()  # Только один раз при запуске
 
     async with get_session() as session:
         success = await add_to_db(
-            session, 12345, "Item Name", "https://example.com", 1000, 30
+            session, 12345, "https://example.com", 1000, 30
         )
 
 
