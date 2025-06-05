@@ -1,7 +1,7 @@
 # Marketplace price tracking app
 
 ### Description
-This is a Telegram Bot for tracking price changes on online marketplaces such as [Ozon](https://www.ozon.ru/), [Yandex Market](https://market.yandex.ru) and [Wildberries](https://www.wildberries.ru)
+This is a Telegram Bot for tracking price changes on online marketplaces such as [Ozon](https://www.ozon.ru/), [Yandex.Market](https://market.yandex.ru) and [Wildberries](https://www.wildberries.ru)
 
 ### Quick Start
 1. Clone repo
@@ -37,4 +37,4 @@ python3 main.py
 [Evgeniy Golodnykh](https://github.com/Evgeniy-Golodnykh)
 
 ### CI/CD pipeline status
-![movies_notifications_workflow](https://github.com/Evgeniy-Golodnykh/movies_notification/actions/workflows/movies_notifications_workflow.yml/badge.svg)
+![movies_notifications_workflow](https://github.com/Evgeniy-Golodnykh/movies_notification/actions/workflows/marketplace_price_tracking_workflow.yml/badge.svg)
