@@ -4,11 +4,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, ReplyKeyboardRemove
 
+from bot import text
 from bot.keyboards import main_menu_keyboard, tracking_duration_keyboard
-from bot.messages import (
-    ADD_ITEM_MESSAGE, FAVORITE_MESSAGE, INFO_MESSAGE, MENU_MESSAGE,
-    START_MESSAGE,
-)
 from core.constants import MARKETPLACE_URLS, TRACKING_DURATION
 
 router = Router()
@@ -23,29 +20,29 @@ class TrackItem(StatesGroup):
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     await message.answer(
-        START_MESSAGE.format(name=message.from_user.first_name),
+        text.START_MESSAGE.format(name=message.from_user.first_name),
         reply_markup=main_menu_keyboard
     )
 
 
-@router.message(Command('menu'))
+@router.message(Command(text.MENU))
 async def cmd_menu(message: Message):
-    await message.answer(MENU_MESSAGE, reply_markup=main_menu_keyboard)
+    await message.answer(text.MENU_MESSAGE, reply_markup=main_menu_keyboard)
 
 
-@router.message(Command('favorite'))
+@router.message(Command(text.FAVORITE))
 async def cmd_favorite(message: Message):
-    await message.answer(FAVORITE_MESSAGE)
+    await message.answer(text.FAVORITE_MESSAGE)
 
 
-@router.message(Command('info'))
+@router.message(Command(text.INFO))
 async def cmd_info(message: Message):
-    await message.answer(INFO_MESSAGE, reply_markup=main_menu_keyboard)
+    await message.answer(text.INFO_MESSAGE, reply_markup=main_menu_keyboard)
 
 
-@router.message(F.text == ADD_ITEM_MESSAGE)
+@router.message(F.text == text.ADD_ITEM_MESSAGE)
 async def add_item(message: Message, state: FSMContext):
-    await message.answer('Отправьте ссылку на товар:')
+    await message.answer(text.GET_LINK_MESSAGE)
     await state.set_state(TrackItem.waiting_for_link)
 
 
@@ -53,10 +50,10 @@ async def add_item(message: Message, state: FSMContext):
 async def get_link(message: Message, state: FSMContext):
     link = message.text.strip().split('?')[0]
     if all([url not in link for url in MARKETPLACE_URLS]):
-        await message.answer('Пожалуйста, введите корректную ссылку')
+        await message.answer(text.ERROR_LINK_MESSAGE)
         return
     await state.update_data(link=link)
-    await message.answer('Введите желаемую цену:')
+    await message.answer(text.GET_PRICE_MESSAGE)
     await state.set_state(TrackItem.waiting_for_price)
 
 
@@ -67,13 +64,12 @@ async def get_price(message: Message, state: FSMContext):
         if price < 1:
             raise ValueError
     except ValueError:
-        await message.answer('Пожалуйста, введите положительное целое число')
+        await message.answer(text.ERROR_PRICE_MESSAGE)
         return
     await state.update_data(price=price)
 
     await message.answer(
-        'Пожалуйста, выберите срок отслеживания товара из списка ниже:',
-        reply_markup=tracking_duration_keyboard
+        text.GET_DURATION_MESSAGE, reply_markup=tracking_duration_keyboard
     )
     await state.set_state(TrackItem.waiting_for_duration)
 
@@ -82,8 +78,7 @@ async def get_price(message: Message, state: FSMContext):
 async def get_duration(message: Message, state: FSMContext):
     if message.text not in TRACKING_DURATION:
         await message.answer(
-            'Пожалуйста, выберите срок отслеживания товара из списка ниже:',
-            reply_markup=tracking_duration_keyboard
+            text.GET_DURATION_MESSAGE, reply_markup=tracking_duration_keyboard
         )
         return
     data = await state.get_data()
@@ -102,6 +97,6 @@ async def get_duration(message: Message, state: FSMContext):
     await state.clear()
 
 
-@router.message(F.text == 'Избранное')
+@router.message(F.text == text.FAVORITE_DESC)
 async def show_favorites(message: Message):
-    await message.answer(FAVORITE_MESSAGE)
+    await message.answer(text.FAVORITE_MESSAGE)

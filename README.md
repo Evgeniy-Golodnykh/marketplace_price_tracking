@@ -37,4 +37,4 @@ python3 main.py
 [Evgeniy Golodnykh](https://github.com/Evgeniy-Golodnykh)
 
 ### CI/CD pipeline status
-![movies_notifications_workflow](https://github.com/Evgeniy-Golodnykh/movies_notification/actions/workflows/marketplace_price_tracking_workflow.yml/badge.svg)
+![marketplace price tracking workflow](https://github.com/Evgeniy-Golodnykh/marketplace_price_tracking/actions/workflows/marketplace_price_tracking_workflow.yml/badge.svg)
