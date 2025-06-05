@@ -24,10 +24,10 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     telegram_id = Column(Integer)
-    marketplace = Column(String(50))
+    name = Column(String(500))
     url = Column(String(500))
+    marketplace = Column(String(50))
     target_price = Column(Integer)
-    create_date = Column(Date, default=dt.date.today)
     expiry_date = Column(Date)
 
     def __repr__(self):
@@ -53,7 +53,7 @@ async def get_session():
         yield session
 
 
-async def get_all_items(session, telegram_id=None):
+async def get_items(session, telegram_id=None):
     """Get all or Telegram user Item instances."""
 
     if telegram_id:
@@ -68,6 +68,7 @@ async def get_all_items(session, telegram_id=None):
 async def create_item(
         session,
         telegram_id,
+        name,
         url,
         marketplace,
         target_price,
@@ -83,6 +84,7 @@ async def create_item(
 
     item = Item(
         telegram_id=telegram_id,
+        name=name,
         url=url,
         marketplace=marketplace,
         target_price=target_price,

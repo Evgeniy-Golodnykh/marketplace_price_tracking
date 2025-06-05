@@ -5,6 +5,10 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, ReplyKeyboardRemove
 
 from bot.keyboards import main_menu_keyboard, tracking_duration_keyboard
+from bot.messages import (
+    ADD_ITEM_MESSAGE, FAVORITE_MESSAGE, INFO_MESSAGE, MENU_MESSAGE,
+    START_MESSAGE,
+)
 from core.constants import MARKETPLACE_URLS, TRACKING_DURATION
 
 router = Router()
@@ -19,23 +23,27 @@ class TrackItem(StatesGroup):
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     await message.answer(
-        f'''Привет, {message.from_user.first_name}!
-            Бот помогает отслеживать изменение цен товаров маркетплейсов''',
+        START_MESSAGE.format(name=message.from_user.first_name),
         reply_markup=main_menu_keyboard
     )
 
 
 @router.message(Command('menu'))
 async def cmd_menu(message: Message):
-    await message.answer('Главное меню:', reply_markup=main_menu_keyboard)
+    await message.answer(MENU_MESSAGE, reply_markup=main_menu_keyboard)
 
 
 @router.message(Command('favorite'))
 async def cmd_favorite(message: Message):
-    await message.answer('Ваши избранные товары:')
+    await message.answer(FAVORITE_MESSAGE)
 
 
-@router.message(F.text == 'Добавить товар')
+@router.message(Command('info'))
+async def cmd_info(message: Message):
+    await message.answer(INFO_MESSAGE, reply_markup=main_menu_keyboard)
+
+
+@router.message(F.text == ADD_ITEM_MESSAGE)
 async def add_item(message: Message, state: FSMContext):
     await message.answer('Отправьте ссылку на товар:')
     await state.set_state(TrackItem.waiting_for_link)
@@ -96,4 +104,4 @@ async def get_duration(message: Message, state: FSMContext):
 
 @router.message(F.text == 'Избранное')
 async def show_favorites(message: Message):
-    await message.answer('Список избранных товаров:')
+    await message.answer(FAVORITE_MESSAGE)
