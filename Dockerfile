@@ -14,4 +14,4 @@ RUN python -m pip install --upgrade pip
 RUN pip3 install -r requirements.txt --no-cache-dir
 RUN playwright install --with-deps chromium
 COPY src/ .
-CMD ["python", "main.py"]
+CMD ["python", "-m", "main.py"]

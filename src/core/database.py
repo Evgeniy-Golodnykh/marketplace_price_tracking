@@ -31,7 +31,7 @@ class Item(Base):
     expiry_date = Column(Date)
 
     def __repr__(self):
-        return self.name
+        return f'[{self.name}]({self.url})'
 
 
 engine = create_async_engine(URL.create(**DATABASE), echo=False)

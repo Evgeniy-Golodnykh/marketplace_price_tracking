@@ -27,7 +27,7 @@ cd src
 ```
 6. To run the application use command
 ```bash
-python3 main.py
+python3 -m main.py
 ```
 
 ### Technology
