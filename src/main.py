@@ -11,6 +11,8 @@ from bot.routes import router
 from core.configs import configure_logging
 from core.constants import TELEGRAM_TOKEN
 
+# from core.database import init_models
+
 
 async def main():
     bot = Bot(
@@ -21,6 +23,7 @@ async def main():
     await bot.set_my_commands([START_CMD, MENU_CMD, FAVORITE_CMD, INFO_CMD])
     await bot.set_chat_menu_button(menu_button=MenuButtonCommands())
     dp.include_router(router)
+    # await init_models()
     await dp.start_polling(bot)
 
 

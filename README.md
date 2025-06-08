@@ -21,11 +21,15 @@ source venv/bin/activate
 python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
 ```
-5. Go to src folder
+5. Install Chromium for marketplace websites scraping
+```bash
+playwright install --with-deps chromium
+```
+6. Go to src folder
 ```bash
 cd src
 ```
-6. To run the application use command
+7. To run the application use command
 ```bash
 python3 -m main.py
 ```

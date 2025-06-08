@@ -7,6 +7,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from bot import text
 from bot.keyboards import main_menu_keyboard, tracking_duration_keyboard
 from core.constants import MARKETPLACE_URLS, TRACKING_DURATION
+from core.database import get_items, get_session
 
 router = Router()
 
@@ -32,7 +33,10 @@ async def cmd_menu(message: Message):
 
 @router.message(Command(text.FAVORITE))
 async def cmd_favorite(message: Message):
-    await message.answer(text.FAVORITE_MESSAGE)
+    async with get_session() as session:
+        items = await get_items(session, message.from_user.id)
+        text_items = [f'{count + 1}. {items[count]}' for count in len(items)]
+    await message.answer(text.FAVORITE_MESSAGE + '\n'.join(text_items))
 
 
 @router.message(Command(text.INFO))
@@ -99,4 +103,4 @@ async def get_duration(message: Message, state: FSMContext):
 
 @router.message(F.text == text.FAVORITE_DESC)
 async def show_favorites(message: Message):
-    await message.answer(text.FAVORITE_MESSAGE)
+    await cmd_favorite(message)
