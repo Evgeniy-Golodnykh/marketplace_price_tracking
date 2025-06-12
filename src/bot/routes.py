@@ -1,3 +1,5 @@
+from parser.core import run_parser
+
 from aiogram import F, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
@@ -7,7 +9,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from bot import text
 from bot.keyboards import main_menu_keyboard, tracking_duration_keyboard
 from core.constants import MARKETPLACE_URLS, TRACKING_DURATION
-from core.database import get_items, get_session
+from core.database import create_item, get_items, get_session
 
 router = Router()
 
@@ -35,7 +37,7 @@ async def cmd_menu(message: Message):
 async def cmd_favorite(message: Message):
     async with get_session() as session:
         items = await get_items(session, message.from_user.id)
-        text_items = [f'{count + 1}. {items[count]}' for count in len(items)]
+        text_items = [f'{num + 1}. {items[num]}' for num in range(len(items))]
     await message.answer(text.FAVORITE_MESSAGE + '\n'.join(text_items))
 
 
@@ -87,15 +89,19 @@ async def get_duration(message: Message, state: FSMContext):
         return
     data = await state.get_data()
     link = data['link']
-    price = data['price']
-    duration = int(message.text.split()[0])
-
+    name, current_price = await run_parser(link)
+    async with get_session() as session:
+        await create_item(
+            session=session,
+            telegram_id=message.from_user.id,
+            name=name,
+            url=link,
+            marketplace='ozon',
+            target_price=data['price'],
+            days=int(message.text.split()[0]),
+        )
     await message.answer(
-        f'''Товар добавлен:
-            Ссылка: {link}
-            Цена: {price} ₽
-            Срок: {duration} дней
-            Ваш Telegram ID: {message.from_user.id}''',
+        text.ITEM_ADDED_MESSAGE.format(name=name, price=current_price),
         reply_markup=ReplyKeyboardRemove()
     )
     await state.clear()

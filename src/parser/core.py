@@ -1,4 +1,4 @@
-import asyncio
+from parser.configs import browser_config, stealth_js
 
 from playwright.async_api import async_playwright
 
@@ -27,31 +27,23 @@ async def parse_product(page, url, config):
     await page.goto(url, timeout=10000)
     title = await extract_title(page, config['title_selectors'])
     price = await extract_price(page, config['price_selectors'])
-
-    print(f'Название товара: {title}')
-    print(f'Цена: {price}')
+    return title, price
 
 
-async def run_parser(urls, config, stealth_js):
+async def run_parser(url):
     async with async_playwright() as p:
         browser = await p.chromium.launch(
             headless=True,
-            args=config['chrome_args']
+            args=browser_config['chrome_args']
         )
-
         context = await browser.new_context(
-            user_agent=config['user_agent'],
-            locale=config['locale'],
-            viewport=config['viewport'],
+            user_agent=browser_config['user_agent'],
+            locale=browser_config['locale'],
+            viewport=browser_config['viewport'],
             java_script_enabled=True
         )
-
         await context.add_init_script(stealth_js)
-
-        pages = [await context.new_page() for _ in urls]
-        tasks = [
-            parse_product(page, url, config) for page, url in zip(pages, urls)
-        ]
-        await asyncio.gather(*tasks)
-
+        page = await context.new_page()
+        title, price = await parse_product(page, url, browser_config)
         await browser.close()
+    return title, price

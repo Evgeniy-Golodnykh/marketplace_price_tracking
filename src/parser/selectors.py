@@ -2,6 +2,7 @@ ozon = {
     'price_selectors': [
         'span.mp7_28.m5p_28',
         'span.m1q_28.qm1_28.q5m_28',
+        'span[class="om7_27 o5m_27"]',
     ],
     'title_selectors': [
         'h1',
