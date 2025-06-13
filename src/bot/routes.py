@@ -38,7 +38,9 @@ async def cmd_favorite(message: Message):
     async with get_session() as session:
         items = await get_items(session, message.from_user.id)
         text_items = [f'{num + 1}. {items[num]}' for num in range(len(items))]
-    await message.answer(text.FAVORITE_MESSAGE + '\n'.join(text_items))
+    await message.answer(
+        text.FAVORITE_MESSAGE + '\n'.join(text_items), parse_mode='Markdown'
+    )
 
 
 @router.message(Command(text.INFO))
@@ -91,7 +93,7 @@ async def get_duration(message: Message, state: FSMContext):
     link = data['link']
     name, current_price = await run_parser(link)
     async with get_session() as session:
-        await create_item(
+        if not await create_item(
             session=session,
             telegram_id=message.from_user.id,
             name=name,
@@ -99,7 +101,9 @@ async def get_duration(message: Message, state: FSMContext):
             marketplace='ozon',
             target_price=data['price'],
             days=int(message.text.split()[0]),
-        )
+        ):
+            await message.answer(text.ERROR_ADD_ITEM_MESSAGE)
+            return
     await message.answer(
         text.ITEM_ADDED_MESSAGE.format(name=name, price=current_price),
         reply_markup=ReplyKeyboardRemove()

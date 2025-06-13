@@ -13,12 +13,19 @@ browser_config = {
     'viewport': {'width': 1280, 'height': 800},
     'locale': 'ru-RU',
     'price_selectors': [
+        'span[class="om7_27 o5m_27"]',
         'span.mp7_28.m5p_28',
         'span.m1q_28.qm1_28.q5m_28',
-        'span[class="om7_27 o5m_27"]',
+        'span[data-auto="snippet-price-current"]',
+        'span[data-auto="price-block"]',
+        'span[class="price-block__wallet-price red-price"]',
+        'span[class="price-block__wallet-price"]',
+        'ins[class="price-block__final-price"]',
     ],
     'title_selectors': [
         'h1',
+        'h1[data-auto="productCardTitle"]',
+        'h1[class="product-page__title"]',
     ]
 }
 
