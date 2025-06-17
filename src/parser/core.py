@@ -33,7 +33,7 @@ async def parse_product(page, url, config):
 async def run_parser(url):
     async with async_playwright() as p:
         browser = await p.chromium.launch(
-            headless=False,
+            headless=True,
             args=browser_config['chrome_args']
         )
         context = await browser.new_context(

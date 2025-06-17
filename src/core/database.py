@@ -1,4 +1,5 @@
 import datetime as dt
+import logging
 from contextlib import asynccontextmanager
 
 from sqlalchemy import (
@@ -10,6 +11,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 from core.configs import DATABASE
+
+SUCCESSFUL_ADD_ITEM_MESSAGE = 'Product from URL[{url}] added successfully'
+ERROR_ADD_ITEM_MESSAGE = 'Error adding product from URL[{url}]'
 
 Base = declarative_base()
 
@@ -94,9 +98,11 @@ async def create_item(
     session.add(item)
     try:
         await session.commit()
+        logging.info(SUCCESSFUL_ADD_ITEM_MESSAGE.format(url=url))
         return True
     except IntegrityError:
         await session.rollback()
+        logging.error(ERROR_ADD_ITEM_MESSAGE.format(url=url), exc_info=True)
         return False
 
 
@@ -107,18 +113,3 @@ async def delete_item(session, telegram_id, url):
     result = await session.execute(stmt)
     await session.commit()
     return result.rowcount > 0
-
-
-'''
-async def main():
-    await init_models()  # Только один раз при запуске
-
-    async with get_session() as session:
-        success = await add_to_db(
-            session, 12345, "https://example.com", 1000, 30
-        )
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
-'''
