@@ -12,8 +12,8 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from core.configs import DATABASE
 
-SUCCESSFUL_ADD_ITEM_MESSAGE = 'Product from URL[{url}] added successfully'
-ERROR_ADD_ITEM_MESSAGE = 'Error adding product from URL[{url}]'
+SUCCESSFUL_ADD_ITEM_MESSAGE = 'Product successfully added from URL --> {url}'
+ERROR_ADD_ITEM_MESSAGE = 'Error adding product from URL --> {url}'
 
 Base = declarative_base()
 

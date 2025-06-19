@@ -37,7 +37,12 @@ async def cmd_menu(message: Message):
 async def cmd_favorite(message: Message):
     async with get_session() as session:
         items = await get_items(session, message.from_user.id)
-        text_items = [f'{num + 1}. {items[num]}' for num in range(len(items))]
+    if not items:
+        await message.answer(
+            text.FAVORITE_NOT_EXISTS_MESSAGE,
+            reply_markup=main_menu_keyboard
+        )
+    text_items = [f'{num + 1}. {items[num]}' for num in range(len(items))]
     await message.answer(
         text.FAVORITE_MESSAGE + '\n'.join(text_items),
         disable_web_page_preview=True,

@@ -11,6 +11,7 @@ MENU_MESSAGE = 'Главное меню.\nВыберите дальнейшее 
 FAVORITE = 'favorite'
 FAVORITE_DESC = 'Избранные товары'
 FAVORITE_MESSAGE = 'Ваши избранные товары:\n'
+FAVORITE_NOT_EXISTS_MESSAGE = 'Избранные товары отсуствуют.'
 
 INFO = 'info'
 INFO_DESC = 'О боте'
